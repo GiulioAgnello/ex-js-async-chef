@@ -9,6 +9,8 @@
 // Utilizzare await per chiamare le API.
 // Restituire una Promise con la data di nascita dello chef.
 // Gestire gli errori con try/catch
+// const dayjs = require(`dayjs`);
+// import
 
 async function fetchJson(url) {
   const response = await fetch(url);
@@ -47,7 +49,10 @@ const getChefBirthday = async (id) => {
 (async () => {
   try {
     const birthday = await getChefBirthday(1);
-    console.log(`il Compleanno dello chef è il`, birthday);
+    let d = new Date(birthday);
+    let bDay = dayjs(d).format("DD/MM/YYYY");
+
+    console.log(`il Compleanno dello chef è il`, bDay);
   } catch (error) {
     console.error(error);
   } finally {
