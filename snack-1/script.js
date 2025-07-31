@@ -17,13 +17,42 @@ async function fetchJson(url) {
 }
 
 const getChefBirthday = async (id) => {
-  const ricetta = await fetchJson(`https://dummyjson.com/recipes/${id}`);
-  const chef = await fetchJson(`https://dummyjson.com/users/${ricetta.userId}`);
+  let ricetta;
+  let chef;
+  try {
+    ricetta = await fetchJson(`https://dummyjson.com/recipes/${id}`);
+  } catch (error) {
+    throw new Error(`non è stato possibile recuperare ricetta con id ${id}`);
+  }
+
+  if (ricetta.message) {
+    throw new Error(ricetta.message);
+  }
+
+  try {
+    const chef = await fetchJson(
+      `https://dummyjson.com/users/${ricetta.userId}`
+    );
+  } catch (error) {
+    throw new Error(
+      `non è stato possibile trovare lo chef con userID ${ricetta.userId}`
+    );
+  }
+
+  if (chef.message) {
+    throw new Error(chef.message);
+  }
+
   return { ...ricetta, chef };
 };
 
 (async () => {
-  const ricetta = await getChefBirthday(1);
-  console.log(`ricetta competa: `, ricetta);
-  console.log(ricetta.chef);
+  try {
+    const ricetta = await getChefBirthday(1);
+    console.log(`ricetta competa: `, ricetta);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    console.log(`fine!`);
+  }
 })();
